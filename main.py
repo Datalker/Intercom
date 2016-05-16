@@ -1,12 +1,8 @@
 from datetime import datetime
 import requests
 import json
+from settings import *
 
-usr = 'tgv7x1m3'
-passw = 'ro-29475fef0ab42ef8444a7a404109968163b5b9c8'
-headers = {'Accept': 'application/json'}
-url_list = 'https://api.intercom.io/conversations'
-url_item = 'https://api.intercom.io/conversations/[ID]?display_as=plaintext'
 output_fields = ['conversation_id', 'id', 'author_id', 'author_type', 'body',
                  'created_at', 'updated_at']
 d_start = datetime(2016, 4, 12)
