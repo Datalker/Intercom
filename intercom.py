@@ -14,9 +14,10 @@ TAG_RE = re.compile(r'<[^>]+>')
 def remove_tags(text):
     return TAG_RE.sub('', text)
 
-def download_conversations():
-    r = requests.get(lset.url_list, headers=lset.headers, auth=(lset.app_id, lset.api_key))
+def download_conversations(app_id, api_key):
+    r = requests.get(lset.url_list, headers=lset.headers, auth=(app_id, api_key))
     j = json.loads(r.text)
+    print('Conversations: ', j)
     return j['conversations']
 
 
@@ -25,9 +26,9 @@ def date_in_range(item):
     return dt > d_start and dt < d_end
 
 
-def download_conversation_parts(conversation_id):
+def download_conversation_parts(conversation_id, app_id, api_key):
     url = lset.url_item.replace('[ID]', conversation_id)
-    r = requests.get(url, headers=lset.headers, auth=(lset.app_id, lset.api_key))
+    r = requests.get(url, headers=lset.headers, auth=(app_id, api_key))
     j = json.loads(r.text)
     conv_parts = j['conversation_parts']['conversation_parts']
     for c in conv_parts: c['conversation_id'] = conversation_id
@@ -68,7 +69,7 @@ def prepare_conv_parts(conv_parts, output='dict'):
 #  Execution
 
 def get_conversation_parts(from_date, to_date, app_id, api_key):
-    conv_all = download_conversations()
+    conv_all = download_conversations(app_id, api_key)
     conv_all_filtered = []
 
     for c in conv_all:
@@ -78,7 +79,7 @@ def get_conversation_parts(from_date, to_date, app_id, api_key):
 
     conv_parts_all = []
     for c in conv_all:
-        conv_parts = download_conversation_parts(c['id'])
+        conv_parts = download_conversation_parts(c['id'], app_id, api_key)
         conv_parts_filtered = []
         for c in conv_parts:
             dt = datetime.fromtimestamp(int(c['updated_at']))
