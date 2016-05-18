@@ -8,7 +8,7 @@ import intercom
 
 app = Flask(__name__)
 
-result_file_path = './result.csv'
+result_file_path = './static/result.csv'
 
 @app.route("/")
 def form():
@@ -35,7 +35,8 @@ def result():
 
 @app.route('/csv')
 def download_file():
-    return send_from_directory('/', 'result.csv', as_attachment=True)
+    return send_from_directory(app.static_folder, 'result.csv', as_attachment=True)
+
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0')
