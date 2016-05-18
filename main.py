@@ -3,11 +3,12 @@ from flask import Flask
 from flask import render_template
 from flask import url_for
 from flask import request
+from flask import send_from_directory
 import intercom
 
 app = Flask(__name__)
 
-result_file_path = './static/csv/result.csv'
+result_file_path = './result.csv'
 
 @app.route("/")
 def form():
@@ -32,6 +33,9 @@ def result():
         # print(conv_parts)
         return render_template('table.html', conv_parts=conv_parts_dict)
 
+@app.route('/csv')
+def download_file():
+    return send_from_directory('/', 'result.csv', as_attachment=True)
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0')
