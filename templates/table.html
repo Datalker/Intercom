@@ -28,90 +28,74 @@
 
 			</header> -->
 
-				<div class="row">
-					<div class="col-md-12">
-						<article class="widget">
-							<header class="widget__header">
-								<div class="widget__title">
-									<a href="#"><i class="pe-7f-diskette"></i></a><h3>Conversation parts</h3>
-								</div>
-								<!-- <div class="widget__config">
-									<a href="#"><i class="pe-7f-diskette"></i></a>
-								</div> -->
-							</header>
+	<div class="row">
+		<div class="col-md-12">
+			<article class="widget">
+				<header class="widget__header">
+					<div class="widget__title">
+						<a href="{{ url_for('static', filename='csv/result.csv') }}"><i class="pe-7f-diskette"></i></a><h3>Conversation parts </h3>
+					</div>
+					<!-- <div class="widget__config">
+						<a href="#"><i class="pe-7f-diskette"></i></a>
+					</div> -->
+				</header>
 
-							<div class="widget__content filled pad20">
+				<div class="widget__content filled pad20">
 
-								<div class="row">
-									<div class="col-md-12 text-center btn__showcase2">
+					<div class="row">
+						<div class="col-md-12 text-center btn__showcase2">
 
-										<table class="table table-hover media-table">
-									  	<thead>
-									  		<tr>
-									  			<th>conversation_id</th>
-									  			<th>part_id</th>
-									  			<th>author_id</th>
-									  			<th>author_type</th>
-									  			<th>body</th>
-									  			<th>created_at</th>
-									  			<th>updated_at</th>
-									  		</tr>
-									  	</thead>
-									  	<tbody>
-									  		<tr>
-                                                <td class="text-left">
-                                                    A14778146814
-                                                </td>
-                                                <td class="text-left">
-                                                    8275yrihfeahk
-                                                </td>
-                                                <td class="text-left">
-                                                    298ruewfskfjs
-                                                </td>
-                                                <td class="text-left">
-                                                    admin
-                                                </td>
-                                                <td class="text-left">
-                                                    Anyone can call me
-                                                </td>
-                                                <td class="text-left">
-                                                    2015.12.21
-                                                </td>
-                                                <td class="text-left">
-                                                    2016.01.12
-                                                </td>
-                                            </tr>
+<table class="table table-hover media-table">
+	<thead>
+		<tr>
+			<th>conversation_id</th>
+			<th>part_id</th>
+			<th>author_id</th>
+			<th>author_type</th>
+			<th>body</th>
+			<th>created_at</th>
+			<th>updated_at</th>
+		</tr>
+	</thead>
 
-											<tr>
-                                                <td class="text-left">
-                                                    A14778146814
-                                                </td>
-                                                <td class="text-left">
-                                                    8275yrihfeahk
-                                                </td>
-                                                <td class="text-left">
-                                                    298ruewfskfjs
-                                                </td>
-                                                <td class="text-left">
-                                                    admin
-                                                </td>
-                                                <td class="text-left">
-                                                    Anyone can call me
-                                                </td>
-                                                <td class="text-left">
-                                                    2015.12.21
-                                                </td>
-                                                <td class="text-left">
-                                                    2016.01.12
-                                                </td>
-                                            </tr>
+    <tbody>
+    {% for conv in conv_parts %}
+    <tr>
+        <td class="text-left">  {{ conv['conversation_id'] }} </td>
+        <td class="text-left">  {{ conv['id'] }} </td>
+        <td class="text-left">  {{ conv['author_id'] }} </td>
+        <td class="text-left">  {{ conv['author_type'] }} </td>
+        <td class="text-left">  {{ conv['body'] }} </td>
+        <td class="text-left">  {{ conv['created_at'] }} </td>
+        <td class="text-left">  {{ conv['updated_at'] }} </td>
 
-
-									  	</tbody>
-										</table>
-
-
-
+<!--         <td class="text-left">
+            A14778146814
+        </td>
+        <td class="text-left">
+            8275yrihfeahk
+        </td>
+        <td class="text-left">
+            298ruewfskfjs
+        </td>
+        <td class="text-left">
+            admin
+        </td>
+        <td class="text-left">
+            Anyone can call me
+        </td>
+        <td class="text-left">
+            2015.12.21
+        </td>
+        <td class="text-left">
+            2016.01.12
+        </td>
+ -->    </tr>
+    {% else %}
+        <tr class="text-left"> No entries found </tr>
+    {% endfor %}
+	</tbody>
+</table>
 
 									</div>
 

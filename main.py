@@ -1,66 +1,37 @@
 from datetime import datetime
-import requests
-import json
-from settings import *
+from flask import Flask
+from flask import render_template
+from flask import url_for
+from flask import request
+import intercom
 
-output_fields = ['conversation_id', 'id', 'author_id', 'author_type', 'body',
-                 'created_at', 'updated_at']
-d_start = datetime(2016, 4, 12)
-d_end = datetime(2016, 10, 10)
+app = Flask(__name__)
 
+result_file_path = './static/csv/result.csv'
 
-def get_conversations():
-    r = requests.get(url_list, headers=headers, auth=(usr, passw))
-    j = json.loads(r.text)
-    return j['conversations']
+@app.route("/")
+def form():
+    return render_template('form.html')
 
+@app.route("/result", methods=['POST', 'PUT'])
+def result():
+    print("request.method = ", request.method )
+    print("request.form = ", request.form )
 
-def date_in_range(item):
-    dt = datetime.fromtimestamp(int(item['updated_at']))
-    return dt > d_start and dt < d_end
+    if request.method == 'POST':
+        from_date = datetime.strptime(request.form['from_date'], '%Y.%m.%d')
+        to_date = datetime.strptime(request.form['to_date'], '%Y.%m.%d')
+        app_id = request.form['app_id']
+        api_key = request.form['api_key']
+        conv_parts = intercom.get_conversation_parts(from_date, to_date, app_id, api_key)
+        conv_parts_dict = intercom.prepare_conv_parts(conv_parts, 'dict')
+        conv_parts_csv = intercom.prepare_conv_parts(conv_parts, 'csv')
+        fl = open(result_file_path, 'w')
+        fl.write(conv_parts_csv)
+        fl.close()
+        # print(conv_parts)
+        return render_template('table.html', conv_parts=conv_parts_dict)
 
-
-def get_conversation_parts(conversation_id):
-    url = url_item.replace('[ID]', conversation_id)
-    r = requests.get(url, headers=headers, auth=(usr, passw))
-    j = json.loads(r.text)
-    conv_parts = j['conversation_parts']['conversation_parts']
-    for c in conv_parts: c['conversation_id'] = conversation_id
-    return conv_parts
-
-
-def output_conv_part(conv_parts):
-    conv_parts_local = conv_parts[:]
-    # prepare data for output
-
-    def date_from_stamp(st):
-        return datetime.fromtimestamp(int(st)).strftime('%Y-%m-%d %H:%M:%S')
-
-    for cp in conv_parts_local:
-        cp['updated_at'] = date_from_stamp(cp['updated_at'])
-        cp['created_at'] = date_from_stamp(cp['created_at'])
-        cp['notified_at'] = date_from_stamp(cp['notified_at'])
-        cp['author_id'] = cp['author']['id']
-        cp['author_type'] = cp['author']['type']
-        del cp['author']
-        cp['body'] = cp['body'] if cp['body'] else ''
-        cp['body'] = cp['body'].replace('"','""')
-        cp['body'] = cp['body'].replace('\n','<new line>')
-        cp['body'] = '"' + cp['body'] + '"'
-
-    # output data
-    print(','.join(output_fields), end='')  # print header line
-    for cp in conv_parts_local:
-        print('')
-        for f in output_fields:
-            print(cp[f], end=',')
-
-#  Execution
-conv_all = filter(date_in_range, get_conversations())
-conv_parts_all = []
-for c in conv_all:
-    conv_parts = filter(date_in_range, get_conversation_parts(c['id']))
-    conv_parts_all = conv_parts_all + list(conv_parts)
-output_conv_part(conv_parts_all)
-
-
+if __name__ == '__main__':
+    app.debug = True
+    app.run(host='0.0.0.0')
