@@ -46,7 +46,9 @@
 						<div class="col-md-12 text-center btn__showcase2">
 
 <table class="table table-hover media-table">
-	<thead>
+	{% if conv_parts %}
+
+    <thead>
 		<tr>
 			<th>conversation_id</th>
 			<th>part_id</th>
@@ -57,7 +59,7 @@
 			<th>updated_at</th>
 		</tr>
 	</thead>
-
+    {% endif %}
     <tbody>
     {% for conv in conv_parts %}
     <tr>
@@ -68,31 +70,9 @@
         <td class="text-left">  {{ conv['body'] }} </td>
         <td class="text-left">  {{ conv['created_at'] }} </td>
         <td class="text-left">  {{ conv['updated_at'] }} </td>
-
-<!--         <td class="text-left">
-            A14778146814
-        </td>
-        <td class="text-left">
-            8275yrihfeahk
-        </td>
-        <td class="text-left">
-            298ruewfskfjs
-        </td>
-        <td class="text-left">
-            admin
-        </td>
-        <td class="text-left">
-            Anyone can call me
-        </td>
-        <td class="text-left">
-            2015.12.21
-        </td>
-        <td class="text-left">
-            2016.01.12
-        </td>
- -->    </tr>
+    </tr>
     {% else %}
-        <tr class="text-left"> No entries found </tr>
+        <tr class="text-left">{{ err }}</tr>
     {% endfor %}
 	</tbody>
 </table>

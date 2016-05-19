@@ -17,7 +17,11 @@ def remove_tags(text):
 def download_conversations(app_id, api_key):
     r = requests.get(lset.url_list, headers=lset.headers, auth=(app_id, api_key))
     j = json.loads(r.text)
-    return j['conversations']
+    if 'pages' in j:
+        return j['conversations']
+    else:
+        raise ValueError('Wrong request to intercom')
+        return []
 
 
 def date_in_range(item):

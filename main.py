@@ -18,23 +18,28 @@ def form():
 
 @app.route("/result", methods=['POST', 'PUT'])
 def result():
-    print("request.method = ", request.method )
-    print("request.form = ", request.form )
+    try:
+        print("request.method = ", request.method )
+        print("request.form = ", request.form )
 
-    if request.method == 'POST':
-        global csv_result
-        from_date = datetime.strptime(request.form['from_date'], '%Y.%m.%d')
-        to_date = datetime.strptime(request.form['to_date'], '%Y.%m.%d')
-        app_id = request.form['app_id']
-        api_key = request.form['api_key']
-        conv_parts = intercom.get_conversation_parts(from_date, to_date, app_id, api_key)
-        conv_parts_dict = intercom.prepare_conv_parts(conv_parts, 'dict')
-        csv_result = intercom.prepare_conv_parts(conv_parts, 'csv')
-        # fl = open(result_file_path, 'w')
-        # fl.write(conv_parts_csv)
-        # fl.close()
-        # print(conv_parts)
-        return render_template('table.html', conv_parts=conv_parts_dict)
+        if request.method == 'POST':
+            global csv_result
+            from_date = datetime.strptime(request.form['from_date'], '%Y.%m.%d')
+            to_date = datetime.strptime(request.form['to_date'], '%Y.%m.%d')
+            app_id = request.form['app_id']
+            api_key = request.form['api_key']
+            conv_parts = intercom.get_conversation_parts(from_date, to_date, app_id, api_key)
+            conv_parts_dict = intercom.prepare_conv_parts(conv_parts, 'dict')
+            csv_result = intercom.prepare_conv_parts(conv_parts, 'csv')
+            # fl = open(result_file_path, 'w')
+            # fl.write(conv_parts_csv)
+            # fl.close()
+            # print(conv_parts)
+            return render_template('table.html', conv_parts=conv_parts_dict, err = 'No records found')
+    except ValueError:
+        err_str = 'Wrong request to intercom. Please Check App ID and APIkey'
+        return render_template('table.html', conv_parts=[], err = err_str)
+
 
 @app.route('/csv')
 def download_file():
