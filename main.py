@@ -42,6 +42,7 @@ def download_file():
     # This is the key: Set the right header for the response
     # to be downloaded, instead of just printed on the browser
     response.headers["Content-Disposition"] = "attachment; filename=result.csv"
+    response.headers["Content-type"] = "text/csv"
     return response
 
     # return send_from_directory(app.static_folder, 'result.csv', as_attachment=True)
